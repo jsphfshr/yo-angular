@@ -1,0 +1,141 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="app.settings.asideFolded = false; 
+			app.settings.asideDock = false;">
+    <div ng-controller="dashboardCrtl">
+        <div ng-show="!loaded" class='text-center'>
+            <div style='margin-top: 100px; font-size: 12px; font-weight: bold'>LOADING</div>
+            <br> <i class="fa fa-spinner text-lg"></i>
+            <br>
+        </div>
+        <div ng-show="loaded" class='wrapper-md'>
+            <div class="row m-l-n-xs" ng-if='dashboard'>
+                <div class="panel col-lg-8 panel-default">
+                    <!-- <div class="panel-heading">
+						Alert &nbsp;<span class="badge">4</span>
+					</div> -->
+                    <div class="panel-body">
+                        <!--Medication-->
+                        <div class="row">
+                            <div class='col-xs-5 col-sm-5 col-md-5 col-lg-5'>
+                                <div class="pull-left m-r-md">
+                                    <i class="fa fa-medkit text-danger text-lg"></i>
+                                </div>
+                                <div class="pull-left">
+                                    <a ui-sref="app.practice.medications" class="h4"><b> Medications </b></a>
+                                    <small class="block text-md" translate="compliance.{{dashboard['kit_compliance_message']}}"></small>
+                                </div>
+                            </div>
+                            <!--  kit statistics -->
+                            <div ng-if="dashboard['kit_meds_num_otrs'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                <span class="block text-{{status(dashboard['kit_compliance_status'])}} text-ot-dashboard">{{dashboard['kit_meds_num_otrs']}}</span>
+                                <span class="text-base">Kit(s)</span>
+                            </div>
+                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right pull-right m-t-sm text-{{status(dashboard['kit_compliance_status'])}}">
+                                <i class="fa fa-circle text-ot-xs"></i>
+                            </div>
+                            <!--  /kit statistics -->
+                        </div>
+                        <hr>
+                        <!-- divider in two rows -->
+
+                        <!-- unused meds recovery -->
+                        <div class="row">
+                            <div class='col-xs-5 col-sm-5 col-md-5 col-lg-5'>
+                                <div class="pull-left m-r-md">
+                                    <i class="icon icon-envelope-letter text-lg text-success"></i>
+                                </div>
+                                <div class="pull-left">
+                                    <a ui-sref="app.practice.unusedmedsrecovery" class="h4"><b> Unused Medication </b></a>
+                                    <small class="block text-md" translate="compliance.{{dashboard['unusedmeds_compliance_message']}}"></small>
+                                </div>
+                            </div>
+                            <!--  unused meds  recovery statistics -->
+                            <div ng-if="dashboard['unusedmeds_num_available'] > 0 || dashboard['unusedmeds_num_processed'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                <span class="block text-{{status(dashboard['unusedmeds_compliance_status'])}} text-ot-dashboard">{{dashboard['unusedmeds_num_available']}}</span>
+                                <span class="text-base">In Office</span>
+                            </div>
+                            <div ng-if="dashboard['unusedmeds_num_available'] > 0 || dashboard['unusedmeds_num_processed'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                <span class="block  text-info text-ot-dashboard">{{dashboard['unusedmeds_num_processed']}}</span>
+                                <span class="text-base">Processed</span>
+                            </div>
+                            <div ng-if="dashboard['unusedmeds_last_processed_date']" class="hidden-xs col-sm-2 col-md-2 col-lg-2 text-center">
+                                <span ng-if="dashboard['unusedmeds_last_processed_status'] =='process'" class=" block text-lg text-success">{{dashboard['unusedmeds_last_processed_date']}}</span>
+                                <span ng-if="dashboard['unusedmeds_last_processed_status'] =='partial'" class=" block text-lg text-warning">{{dashboard['unusedmeds_last_processed_date']}}</span>
+                                <span ng-if="dashboard['unusedmeds_last_processed_status'] =='reject'" class=" block text-lg text-danger">{{dashboard['unusedmeds_last_processed_date']}}</span>
+                                <span class="text-base">Last Activity</span>
+                            </div>
+                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right pull-right m-t-sm text-{{status(dashboard['unusedmeds_compliance_status'])}}">
+                                <i class="fa fa-circle text-ot-xs"></i>
+                            </div>
+                            <!--  /unused meds  recovery statistics -->
+                        </div>
+                        <hr>
+                        <!-- Bio Monitoring -->
+                        <div class="row">
+                            <div class='col-xs-5 col-sm-5 col-md-5 col-lg-5'>
+                                <div class="pull-left m-r-md">
+                                    <i><img src="images/icons/infectioncontrol.svg" class="ot-icon-dashboard"></i>
+                                </div>
+                                <div class="pull-left">
+                                    <a ui-sref="app.practice.biological" class="h4"><b> Biological Monitoring </b></a>
+                                    <small class="block text-md" translate="compliance.{{dashboard['bio_compliance_message']}}"></small>
+                                </div>
+                            </div>
+                            <!-- Bio statistics -->
+                            <div ng-if="dashboard['bio_compliance_message'] != 'BIO_NA'">
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                    <span class="block text-info text-ot-dashboard">{{dashboard['bio_num_active_autoclaves']}}</span>
+                                    <span class="text-base">Autoclave(s)</span>
+                                </div>
+                                <div ng-if="dashboard['bio_num_unassigned_testresults'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                    <span class="block text-ot-warning text-ot-dashboard">{{dashboard['bio_num_unassigned_testresults']}}</span>
+                                    <span class="text-base">Unassigned test(s)</span>
+                                </div>
+                                <div ng-if="dashboard['bio_last_test_date']" class="col-xs-2 col-sm-2 col-md-2 col-lg-2  text-center">
+                                    <span class="block text-{{status(dashboard['bio_compliance_status'])}} text-ot-dashboard text-lg">{{dashboard['bio_last_test_date']}}</span>
+                                    <span class="text-base">Last Activity</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right pull-right m-t-sm text-{{status(dashboard['bio_compliance_status'])}}">
+                                <i class="fa fa-circle text-ot-xs"></i>
+                            </div>
+                            <!--  /Bio statistics -->
+                        </div>
+                        <!--/ Bio Monitoring -->
+                        <hr>
+                        <!-- Medical waste recovery -->
+                        <div class="row">
+                            <div class='col-xs-5 col-sm-5 col-md-5 col-lg-5'>
+                                <div class="pull-left m-r-md">
+                                    <i class=" glyphicon glyphicon-trash text-ot-bucket text-lg"></i>
+                                </div>
+                                <div class="pull-left">
+                                    <a ui-sref="app.practice.medicalwasterecovery" class="h4"><b> Medical Waste </b></a>
+                                    <small class="block text-md" translate="compliance.{{dashboard['mwaste_compliance_message']}}"></small>
+                                </div>
+                            </div>
+                            <!--  medical waste recovery (sharps) statistics -->
+                            <div ng-if="dashboard['mwaste_num_available'] > 0 || dashboard['mwaste_num_destroyed'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                <span class="block text-{{status(dashboard['mwaste_compliance_status'])}} text-ot-dashboard">{{dashboard['mwaste_num_available']}}</span>
+                                <span class="text-base">In Office</span>
+                            </div>
+                            <div ng-if="dashboard['mwaste_num_available'] > 0 || dashboard['mwaste_num_destroyed'] > 0" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 m-t-n-xs text-center">
+                                <span class="block  text-info text-ot-dashboard">{{dashboard['mwaste_num_destroyed']}}</span>
+                                <span class="text-base">Processed</span>
+                            </div>
+                            <div ng-if="dashboard['mwaste_last_destroyed_date']" class="hidden-xs col-sm-2 col-md-2 col-lg-2 text-center">
+                                <span class=" block text-{{status(dashboard['mwaste_compliance_status'])}} text-lg ">{{dashboard['mwaste_last_destroyed_date']}}</span>
+                                <span class="text-base">Last Activity</span>
+                            </div>
+                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right pull-right m-t-sm text-{{status(dashboard['mwaste_compliance_status'])}}">
+                                <i class="fa fa-circle text-ot-xs"></i>
+                            </div>
+                            <!--  /medical waste recovery (sharps) statistics -->
+                        </div>
+                        <!-- /Medical waste recovery -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,82 @@
+<div ng-show="!loaded" class='text-center'>
+    <div style='margin-top: 100px; font-size: 12px; font-weight: bold'>THE CALENDAR IS BEING GENERATED</div>
+    <br> <i class="icon-spinner icon-spin icon-2x"></i>
+    <br>
+</div>
+<div class="padded" ng-show='!calendar && loaded'>None of the practice is performing Biological Monitoring at this time.</div>
+<div ng-show="calendar && loaded">
+    <div class="row">
+        <div class="col-sm-1 pull-right">
+            <div class="btn-group dropdown pull-right">
+                <button class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                    Export <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a ng-href="/infectioncontrol/downloadresultcorporate{{reportFilter.state.length > 0 ? '/states/'+reportFilter.state.join() : ''}}">Details
+							(Excel)</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-pane tab-otcal-cal ng-scope" id="labels">
+            <span style="margin-right: 10px" class="label label-red">Fail / Invalid</span>
+            <span style="margin-right: 10px;background-color:#fdca96" class="label label-orange">Missed
+				</span> <span style="margin-right: 10px;" class="label label-green">Pass</span>
+            <span style="margin-right: 10px; background: #ececec; color: black;" class="label label-gray">Not Started</span>
+        </div>
+        <br>
+        <br>
+        <div class='otcal padded'>
+            <div ng-show="loaded">
+                <div class="otcal-left">
+                    <div class="otcal-left-header">
+                        <div class='namediv'>Name</div>
+
+                        <div class="numberdiv">City</div>
+                        <div class="score">%</div>
+                    </div>
+                    <div class="otcal-left-table-scroll">
+                        <table class="table table-normal bio-table">
+                            <tbody>
+
+                                <tr data-ng-repeat="customer in calendar.data">
+
+                                    <td class='nametd'><a class="text-info" ui-sref="app.practice.biological({id:'{{customer[0][0]}}'})">{{customer[0][1]}}
+									</a>
+                                    </td>
+                                    <td class='numbertd'>({{customer[0][2]}}) {{customer[0][4]}}
+                                    </td>
+                                    <td class='score'>{{customer[0][3]}}%</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="otcal-right">
+                    <div class="otcal-right-header otcal-right-table-width">
+                        <div style="background-color: blue;" class="otcal-right-header-scroll otcal-right-table-scroll-width">
+                            <div class='week' data-ng-repeat="month in calendar.months">
+                                {{month[0]}}</div>
+                        </div>
+                    </div>
+                    <div class="otcal-right-table otcal-right-table-width">
+                        <div class="otcal-right-table-scroll otcal-right-table-scroll-width">
+                            <div id='ournewtooltip'></div>
+                            <table id='otcal-table' class='table table-normal' style="z-index: 100; margin-left: 3px;">
+
+                                <tbody>
+                                    <tr data-ng-repeat="customer_result in calendar.data" coordy="{{$index}}">
+                                        <td class="test_result" style="padding:0;" data-ng-repeat="test_result in customer_result[1] track by $index" ng-style="{'background-color': type(test_result)}" rel="popover" coordx="{{$index}}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

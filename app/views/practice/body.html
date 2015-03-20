@@ -1,0 +1,46 @@
+<style>
+.active-tab {
+    background: #edf1f2;
+    border-radius: 4px;
+}
+.nav-sm li a:hover,
+.nav-sm li a:focus {
+    background-color: #edf1f2;
+}
+</style>
+<div class="wrapper bg-white b-b ng-scope">
+    <!--  Practice top Navigation  -->
+    <ul class="nav nav-pills nav-sm">
+        <li ui-sref-active='active-tab' class="m-r-xs">
+            <a ui-sref="app.practice.dashboard">
+                <i class="glyphicon glyphicon-home text-info"></i>
+            </a>
+        </li>
+        <li ui-sref-active='active-tab' class="m-r-xs">
+            <a ui-sref="app.practice.medications">
+                <i class="fa fa-medkit text-danger icon text-md"></i>
+                <span class="hidden-xs hidden-sm hidden-md">Medications</span>
+            </a>
+        </li>
+        <li ui-sref-active='active-tab' class="m-r-xs">
+            <a ui-sref="app.practice.unusedmedsrecovery">
+                <i class=" icon-envelope-letter icon text-success text-md"></i>
+                <span class="hidden-xs hidden-sm hidden-md"> Unused Medications</span>
+            </a>
+        </li>
+        <li ui-sref-active='active-tab' class="m-r-xs">
+            <a ui-sref="app.practice.biological">
+                <i><img src="images/icons/infectioncontrol.svg" class="ot-icon-tab"></i>
+                <span class="hidden-xs hidden-sm hidden-md"> Biological</span>
+            </a>
+        </li>
+        <li ui-sref-active='active-tab' class="m-r-xs">
+            <a ui-sref="app.practice.medicalwasterecovery">
+                <i class=" glyphicon glyphicon-trash text-ot-bucket text-base"></i>
+                <span class="hidden-xs hidden-sm hidden-md ">Medical Waste</span>
+            </a>
+        </li>
+        <!--  <li><a href="" class="m-l-xs"><i class=" fa fa-bitbucket icon text-md  text-success"></i><span class="hidden-xs hidden-sm hidden-md "> Amalgam Recovery</span></a></li> -->
+    </ul>
+    <!--  /Practice top Navigation  -->
+</div>

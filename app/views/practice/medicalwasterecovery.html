@@ -1,0 +1,87 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="app.settings.asideFolded = false;app.settings.asideDock = false;" ng-controller="sharpsrecoveryCtrl" sharps="sharps">
+    <!-- wrapper starts here -->
+
+    <div class="wrapper-md">
+        <!-- when there is no data -->
+        <div class="wrapper-md row" ng-if='message'>There is no information to display.</div>
+        <!-- /when there is no data -->
+        <!-- loader -->
+        <div ng-show="!loaded" class='text-center'>
+            <div style='margin-top: 100px; font-size: 12px; font-weight: bold'>LOADING</div>
+            <br> <i class="fa fa-spinner text-lg"></i>
+            <br>
+        </div>
+        <!-- /loader -->
+
+        <!-- when there is data -->
+        <!-- Overall view of sharps 'tiles on top' -->
+        <div class='col-lg-12 text-center' ng-if="sharps" ng-show="loaded">
+            <div class="row row-sm text-center">
+                <div class="col-xs-12 col-md-4 col-lg-3">
+                    <div class="panel padder-v item bg-info" ng-if="sharps.reportdata.inhand==0">
+                        <div class="h1 font-thin h1">No Container</div>
+                        <span class="text-xs">in office</span>
+                    </div>
+                    <div ng-if="sharps.reportdata.inhand > 0" class="panel padder-v item bg-info">
+                        <div class="h1 font-thin h1">{{sharps.reportdata.inhand}}
+                            <span ng-if="sharps.reportdata.inhand == 1">Container</span>
+                            <span ng-if="sharps.reportdata.inhand > 1">Containers</span>
+                        </div>
+                        <span ng-if="sharps.reportdata.inhand ==1" class="text-xs">in office</span>
+                        <span ng-if="sharps.reportdata.inhand > 1" class="text-xs">in office</span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4 col-lg-3">
+                    <div class="panel padder-v item bg-info" ng-if="sharps.reportdata.used==0">
+                        <div class="h1 font-thin h1">No Container</div>
+                        <span class="text-xs">is processed</span>
+                    </div>
+                    <div class="panel padder-v item bg-info" ng-if="sharps.reportdata.used > 0">
+                        <div class="h1 font-thin h1" ng-switch="sharps.reportdata.used">{{sharps.reportdata.used}}
+                            <span ng-if="sharps.reportdata.used == 1">Container</span>
+                            <span ng-if="sharps.reportdata.used > 1">Containers</span>
+                        </div>
+                        <span ng-if="sharps.reportdata.used ==1" class="text-xs">processed</span>
+                        <span ng-if="sharps.reportdata.used > 1" class="text-xs">processed</span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4 col-lg-3" ng-if="sharps.reportdata.last_activity">
+                    <div class="panel padder-v item bg-success">
+                        <div class="h1 font-thin h1">Last Container</div>
+                        <span class="text-xs">processed on {{sharps.reportdata.last_activity}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Overall view of sharps 'tiles on top' -->
+        <!-- list the sharp container -->
+        <div ng-repeat='sharp in sharps.sharps'>
+            <div class="col-lg-8 col-sm-12">
+                <div class="panel b-a">
+                    <div class="panel-heading b-b b-light pos-rlt ">
+                        <div class="media">
+                            <span class="pull-left thumb-lg">
+							<img ng-src="/images/sharpsimages/{{sharp.image}}.png" alt="...">
+						</span>
+                            <div class="media-body">
+                                <div ng-if="sharp.received_date" class="pull-right text-center badge bg-success">Processed</div>
+                                <div ng-if="!sharp.received_date" class="pull-right text-center badge bg-info">In office</div>
+                                <span href class="h4"><b>{{sharp.itemdesc}}</b></span>
+                                <small class="block">Item # {{sharp.serial_number}}</small>
+                                <small ng-if="sharp.sent_date" class="block">Sent from practice on {{sharp.sent_date}}</small>
+                                <small ng-if="sharp.received_date" class="block">Processed on {{sharp.received_date}}</small>
+                                <small ng-if="sharp.received_date" class="block text-info">
+								<a class ="text-info text-md" target="_blank" href="/environmental/medrecoverymanifest/token/{{sharp.serial_number}}/custnmbr/{{sharp.customer_number}}">
+									Download Manifest
+								</a>
+							</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- / list the sharp container -->
+        <!-- wrapper starts here -->
+    </div>
+</div>

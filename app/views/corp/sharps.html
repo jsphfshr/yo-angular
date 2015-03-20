@@ -1,0 +1,274 @@
+<style>
+#s_report_t th {
+    cursor: pointer;
+}
+#s_report_t th:after {
+    font-family: FontAwesome;
+    color: #ccc;
+    position: relative;
+    font-weight: normal;
+    float: right;
+}
+#s_report_t .sort_asc:after {
+    content: "\f0de";
+}
+#s_report_t .sort_desc:after {
+    content: "\f0dd";
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#report_status tbody tr:hover {
+    background: whitesmoke;
+    cursor: pointer;
+}
+</style>
+<div ng-controller="corpSharpsCtrl">
+    <div ng-show="!loaded" class='text-center'>
+        <div style='margin-top: 100px; font-size: 12px; font-weight: bold'>
+            THE DATA IS BEING GENERATED
+        </div>
+        <br> <i class=" fa fa-spinner text-lg"></i>
+        <br>
+    </div>
+    <div ng-show="loaded">
+        <div header text='Medical Waste' icon=" glyphicon glyphicon-trash text-ot-bucket"></div>
+        <!-- START WRAPPER -->
+        <div class='wrapper'>
+            <!-- START EXPORT HEADER -->
+            <div class='row m-b-sm'>
+                <div class="col-sm-1 pull-right">
+                    <div class="btn-group dropdown pull-right">
+                        <button class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a ng-href="/api/sharps/downloaddetails{{reportFilter.state.length > 0 ? '/states/'+reportFilter.state.join() : ''}}">Medical Waste Report Card (Excel)</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div ng-show='false' statefilter num="practices.length"></div>
+                <!-- END EXPORT HEADER -->
+            </div>
+
+            <!-- START REPORT ROW -->
+            <div class="row">
+                <!-- START REPORT BOX -->
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Compliance Status
+                        </div>
+                        <table id='report_status' class="table m-b-none">
+                            <thead>
+                                <tr>
+                                    <th style='width: 10%'>Practices</th>
+                                    <th style='width: 30%'></th>
+                                    <th style='width: 40%'>Status</th>
+                                    <th style='width: 20%'>Filter by</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report">
+                                <tr ng-click="selectStatusFilter(3)">
+                                    <td><span class="label text-xs bg-danger">{{stats.status.alert}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress progress-xs m-t-xs m-b-none">
+                                            <div class="progress-bar bg-danger" data-toggle="tooltip" ng-style="{width: (stats.status.alert / practices.length) * 100 + '%'}"></div>
+                                        </div>
+                                    </td>
+                                    <td>Not Compliant</td>
+                                    <td class='text-center'>
+                                        <label class="i-checks m-b-none">
+                                            <input ng-click="selectStatusFilter(3)" ng-checked="statusFilter.value == 3" type="checkbox"><i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <!-- <tr ng-click="selectStatusFilter(2)">
+									<td><span class="label text-xs bg-ot-warning">{{stats.status.warning}}</span></td>
+									<td>
+										<div class="progress progress-xs m-t-xs m-b-none">
+											<div class="progress-bar bg-warning" data-toggle="tooltip"
+											data-original-title="20%"
+											ng-style="{width: (stats.status.warning / practices.length) * 100 + '%'}"></div>
+										</div>
+									</td>
+									<td>At Risk</td>
+									<td class='text-center'><label class="i-checks m-b-none"> <input
+										ng-click="selectStatusFilter(2)" ng-checked="statusFilter.value == 2"
+										type="checkbox"><i></i>
+									</label></td>
+								</tr> -->
+                                <tr ng-click="selectStatusFilter(1)">
+                                    <td><span class="label text-xs bg-success">{{stats.status.success}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress progress-xs m-t-xs m-b-none">
+                                            <div class="progress-bar bg-success" data-toggle="tooltip" ng-style="{width: (stats.status.success / practices.length) * 100 + '%'}"></div>
+                                        </div>
+                                    </td>
+                                    <td>Compliant</td>
+                                    <td class='text-center'>
+                                        <label class="i-checks m-b-none">
+                                            <input ng-click="selectStatusFilter(1)" type="checkbox" ng-checked="statusFilter.value == 1"><i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr ng-click="selectStatusFilter(4)">
+                                    <td><span class="label text-xs bg-ot-na">{{stats.status.na}}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress progress-xs m-t-xs m-b-none">
+                                            <div class="progress-bar bg-ot-na" data-toggle="tooltip" data- ng-style="{width: (stats.status.na / practices.length) * 100 + '%'}"></div>
+                                        </div>
+                                    </td>
+                                    <td>Not on Medical Waste Recovery</td>
+                                    <td class='text-center'>
+                                        <label class="i-checks m-b-none">
+                                            <input ng-click="selectStatusFilter(4)" ng-checked="statusFilter.value == 4" type="checkbox"><i></i>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END REPORT BOX -->
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Stats</div>
+                        <table class="table m-b-none">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th style="width: 70px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total on hand</td>
+                                    <td class="text-success">{{stats.count.available}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total processed</td>
+                                    <td class="text-info">{{stats.count.destroyed}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END REPORT ROW -->
+            </div>
+
+            <!-- START TABLE -->
+            <div class='panel panel-default'>
+                <div class='panel-heading'>
+                    {{filtered.length}} Practices
+                    <span class="text-xs text-muted pull-right text-right col-sm-3">
+						<i class="fa fa-circle text-ot-xs text-danger m-r-xs">
+						</i>
+						<span class="text-sm"> 
+							{{stats.status.alert}}
+						</span>
+                    <i class="fa fa-circle text-ot-xs text-warning m-r-xs m-l-sm">
+						</i>
+                    <span class="text-sm">
+							{{stats.status.warning}}
+						</span>
+                    <i class="fa fa-circle text-ot-xs text-success m-r-xs m-l-sm">
+						</i>
+                    <span class="text-sm">
+							{{stats.status.success}}
+						</span>
+                    <i class="fa fa-circle text-ot-xs text-ot-na m-r-xs m-l-sm">
+						</i>
+                    <span class="text-sm">
+							{{stats.status.na}}
+						</span>
+                    </span>
+                </div>
+                <div class='wrapper'>
+                    <div class='row'>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" class="input-sm form-control" placeholder="Search" ng-model='cursearch.search'>
+                                <span class="input-group-btn">
+									<button type="submit" class="btn btn-sm bg-light">
+										<i class="fa fa-search"></i>
+									</button>
+								</span>
+                            </div>
+                        </div>
+
+                        <div class="btn-group dropdown col-sm-3">
+                            <select class="form-control" ng-model="statusFilter" ng-options="opt as opt.label for opt in filterOptions">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="filtered && filtered.length > 0" class='table-responsive m-t-md'>
+                    <table id='s_report_t' class="table table-striped b-t b-light">
+                        <thead>
+                            <tr>
+                                <th ng-class="tSortHelper('mwaste_compliance_status',cursearch)" ng-click="cursearch.setOrderBy('mwaste_compliance_status')">
+                                    Status
+                                </th>
+                                <th ng-class="tSortHelper('customer_number',cursearch)" ng-click="cursearch.setOrderBy('customer_number')">C#</th>
+                                <th ng-class="tSortHelper('name',cursearch)" ng-click="cursearch.setOrderBy('name')">Name</th>
+                                <th ng-class="tSortHelper('city',cursearch)" ng-click="cursearch.setOrderBy('city')">City</th>
+                                <th ng-class="tSortHelper('state',cursearch)" ng-click="cursearch.setOrderBy('state')">State</th>
+                                <th ng-class="tSortHelper('destroyed',cursearch)" ng-click="cursearch.setOrderBy('available')">OnHand</th>
+                                <th ng-class="tSortHelper('available',cursearch)" ng-click="cursearch.setOrderBy('destroyed')">Processed</th>
+                                <th ng-class="tSortHelper('last_date',cursearch)" ng-click="cursearch.setOrderBy('last_date')">Last</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="practice in filtered =(practices|filter: cursearch.search|filter: cursearch.filter|orderBy:cursearch.orderby:cursearch.reverse)">
+                                <td>
+                                    <span ot-status-circle status="{{practice.mwaste_compliance_status}}">
+							</span>
+                                </td>
+                                <td>
+                                    <a ui-sref="app.practice.medicalwasterecovery({id:'{{practice.customer_number}}'})" class="text-info"> {{practice.customer_number}} 
+							</a>
+                                </td>
+                                <td>
+                                    <a ui-sref="app.practice.medicalwasterecovery({id:'{{practice.customer_number}}'})" class="text-info"> {{practice.name}} 
+							</a>
+                                </td>
+                                <td>
+                                    {{practice.city}}
+                                </td>
+                                <td>
+                                    {{practice.state}}
+                                </td>
+                                <td ng-if="practice.available > 0">
+                                    {{practice.available}}
+                                </td>
+                                <td ng-if="practice.available == 0" class='text-danger'>
+                                    0
+                                </td>
+                                <td>
+                                    {{practice.destroyed}}
+                                </td>
+                                <td>
+                                    {{practice.last_date}}
+                                </td>
+                                <td ng-class="practice.mwaste_compliance_status == 1 ? 'text-success' : (practice.mwaste_compliance_status == 2 ? 'text-warning' : (practice.mwaste_compliance_status == 3 ? 'text-danger' : ''))" translate="compliance.{{practice.mwaste_compliance_message}}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- END TABLE REPORT -->
+            </div>
+        </div>
+    </div>
+    <!-- /main -->
+</div>

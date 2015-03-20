@@ -1,0 +1,437 @@
+<style>
+#s_report_t th,
+#report tr {
+    cursor: pointer;
+}
+#s_report_t th:after {
+    font-family: FontAwesome;
+    color: #ccc;
+    position: relative;
+    font-weight: normal;
+    float: right;
+}
+#s_report_t th.name {
+    width: 20px;
+}
+#s_report_t .sort_asc:after {
+    content: "\f0de";
+}
+#s_report_t .sort_desc:after {
+    content: "\f0dd";
+}
+#s_report_t th {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#report_status tbody tr:hover {
+    background: whitesmoke;
+    cursor: pointer;
+}
+</style>
+
+<!-- START CONTROLLER -->
+<div ng-controller="corpMedsCtrl">
+    <div ng-show="!loaded" class='text-center'>
+        <div style='margin-top: 100px; font-size: 12px; font-weight: bold'>
+            THE DATA IS BEING GENERATED
+        </div>
+        <br><i class="fa fa-spinner text-lg"></i>
+        <br>
+    </div>
+
+    <div ng-show="loaded">
+        <div header text='Medications' icon="fa fa-medkit icon text-danger"></div>
+        <!-- START WRAPPER -->
+        <div class='wrapper'>
+            <!-- START FILTER HEADER -->
+            <div class='row m-b-sm'>
+                <div class='col-sm-11'>
+                    <div class="btn-group">
+                        <button ng-show="selectedReport=='report'" ng-click="selectedReport='report'" type="button" class="btn btn-default active">Compliance Report ({{stats.status.alert}})</button>
+                        <button ng-show="selectedReport!='report'" ng-click="selectedReport='report'" type="button" class="btn btn-default">Compliance Report ({{stats.status.alert}})</button>
+                        <button ng-show="selectedReport=='expired'" ng-click="selectedReport='expired'" type="button" class="btn btn-default active">Expired Items ({{stats.count.expired}})</button>
+                        <button ng-show="selectedReport!='expired'" ng-click="selectedReport='expired'" type="button" class="btn btn-default">Expired Items ({{stats.count.expired}})</button>
+                        <button ng-show="selectedReport=='expiring'" ng-click="selectedReport='expiring'" type="button" class="btn btn-default active">Expiring Items ({{stats.count.expiring}})</button>
+                        <button ng-show="selectedReport!='expiring'" ng-click="selectedReport='expiring'" type="button" class="btn btn-default">Expiring Items ({{stats.count.expiring}})</button>
+                    </div>
+                </div>
+                <div class="col-sm-1 pull-right">
+                    <div class="btn-group dropdown pull-right">
+                        <button class="btn btn-default dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                            Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a ng-href="/medications/downloadkitsdetailcorporate">Medication Report Card
+							(Excel)</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div ng-show='false' statefilter num="practices.length"></div>
+            </div>
+            <!-- END FILTER HEADER -->
+
+            <!-- START COMPLIANCE REPORT CONTENT -->
+            <div ng-show="selectedReport=='report'">
+                <!-- START REPORT ROW -->
+                <div class="row">
+                    <!-- START REPORT BOX -->
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Compliance Status
+                            </div>
+                            <table id='report_status' class="table m-b-none">
+                                <thead>
+                                    <tr>
+                                        <th style='width: 10%'>Practices</th>
+                                        <th style='width: 30%'></th>
+                                        <th style='width: 40%'>Status</th>
+                                        <th style='width: 20%'>Filter by</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report">
+                                    <tr ng-click="selectStatusFilter(3)">
+                                        <td><span class="label text-xs bg-danger">{{stats.status.alert}}</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress progress-xs m-t-xs m-b-none">
+                                                <div class="progress-bar bg-danger" data-toggle="tooltip" ng-style="{width: (stats.status.alert / practices.length) * 100 + '%'}"></div>
+                                            </div>
+                                        </td>
+                                        <td>Not Compliant</td>
+                                        <td>
+                                            <label class="i-checks m-b-none">
+                                                <input ng-click="selectStatusFilter(3)" ng-checked="statusFilter.value == 3" type="checkbox"><i></i>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr ng-click="selectStatusFilter(2)">
+                                        <td><span class="label text-xs bg-ot-warning">{{stats.status.warning}}</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress progress-xs m-t-xs m-b-none">
+                                                <div class="progress-bar bg-warning" data-toggle="tooltip" data-original-title="20%" ng-style="{width: (stats.status.warning / practices.length) * 100 + '%'}"></div>
+                                            </div>
+                                        </td>
+                                        <td>At Risk</td>
+                                        <td>
+                                            <label class="i-checks m-b-none">
+                                                <input ng-click="selectStatusFilter(2)" ng-checked="statusFilter.value == 2" type="checkbox"><i></i>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr ng-click="selectStatusFilter(1)">
+                                        <td><span class="label text-xs bg-success">{{stats.status.success}}</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress progress-xs m-t-xs m-b-none">
+                                                <div class="progress-bar bg-success" data-toggle="tooltip" ng-style="{width: (stats.status.success / practices.length) * 100 + '%'}"></div>
+                                            </div>
+                                        </td>
+                                        <td>Compliant</td>
+                                        <td>
+                                            <label class="i-checks m-b-none">
+                                                <input ng-click="selectStatusFilter(1)" type="checkbox" ng-checked="statusFilter.value == 1"><i></i>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr ng-click="selectStatusFilter(4)">
+                                        <td><span class="label text-xs bg-ot-na">{{stats.status.na}}</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress progress-xs m-t-xs m-b-none">
+                                                <div class="progress-bar bg-ot-na" data-toggle="tooltip" data- ng-style="{width: (stats.status.na / practices.length) * 100 + '%'}"></div>
+                                            </div>
+                                        </td>
+                                        <td>Service Inactive</td>
+                                        <td>
+                                            <label class="i-checks m-b-none">
+                                                <input ng-click="selectStatusFilter(4)" ng-checked="statusFilter.value == 4" type="checkbox"><i></i>
+                                            </label>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- END REPORT BOX -->
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Stats</div>
+                            <table class="table m-b-none">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th style="width: 70px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Expired Medications</td>
+                                        <td class="text-danger">{{stats.count.expired}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Expiring Medications</td>
+                                        <td class="text-warning">{{stats.count.expiring}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Compliant Kits</td>
+                                        <td class="text-info">{{stats.count.aotrs}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END REPORT ROW -->
+                </div>
+
+                <!-- START TABLE -->
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        {{filtered.length}} Practices
+                        <span class="text-xs text-muted pull-right text-right col-sm-3">
+							<i class="fa fa-circle text-ot-xs text-danger m-r-xs">
+							</i>
+							<span class="text-sm"> 
+								{{stats.status.alert}}
+							</span>
+                        <i class="fa fa-circle text-ot-xs text-warning m-r-xs m-l-sm">
+							</i>
+                        <span class="text-sm">
+								{{stats.status.warning}}
+							</span>
+                        <i class="fa fa-circle text-ot-xs text-success m-r-xs m-l-sm">
+							</i>
+                        <span class="text-sm">
+								{{stats.status.success}}
+							</span>
+                        <i class="fa fa-circle text-ot-xs text-ot-na m-r-xs m-l-sm">
+							</i>
+                        <span class="text-sm">
+								{{stats.status.na}}
+							</span>
+                        </span>
+                    </div>
+                    <div class='wrapper'>
+                        <div class='row'>
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <input type="text" class="input-sm form-control" placeholder="Search" ng-model='cursearch.search'>
+                                    <span class="input-group-btn">
+										<button type="submit" class="btn btn-sm bg-light">
+											<i class="fa fa-search"></i>
+										</button>
+									</span>
+                                </div>
+                            </div>
+                            <div class="btn-group dropdown col-sm-3">
+                                <select class="form-control" ng-model="statusFilter" ng-options="opt as opt.label for opt in filterOptions">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="filtered && filtered.length > 0 && selectedReport=='report'" class='table-responsive m-t-md'>
+                        <table id='s_report_t' class="table table-striped b-t b-light">
+                            <thead>
+                                <tr>
+                                    <th ng-class="tSortHelper('kit_compliance_status',cursearch)" ng-click="cursearch.setOrderBy('kit_compliance_status')">
+                                        Status
+                                    </th>
+                                    <th ng-class="tSortHelper('customer_number',cursearch)" ng-click="cursearch.setOrderBy('customer_number')">C#</th>
+                                    <th ng-class="tSortHelper('name',cursearch)" ng-click="cursearch.setOrderBy('name')">Name</th>
+                                    <th ng-class="tSortHelper('city',cursearch)" ng-click="cursearch.setOrderBy('city')">City</th>
+                                    <th ng-class="tSortHelper('state',cursearch)" ng-click="cursearch.setOrderBy('state')">State</th>
+                                    <th ng-class="tSortHelper('num_otrs',cursearch)" ng-click="cursearch.setOrderBy('num_otrs')">Kits</th>
+                                    <th ng-class="tSortHelper('num_expired',cursearch)" ng-click="cursearch.setOrderBy('num_expired')">Expired</th>
+                                    <th>Message</th>
+
+                                    <!-- <th ng-class="tSortHelper('num_sm30',cursearch)"
+										ng-click="cursearch.setOrderBy('num_sm30')">SM 30</th>
+									<th ng-class="tSortHelper('num_sm27',cursearch)"
+										ng-click="cursearch.setOrderBy('num_sm27')">SM 27</th>
+									<th ng-class="tSortHelper('num_sm10',cursearch)"
+										ng-click="cursearch.setOrderBy('num_sm10')">SM 10</th>
+									<th ng-class="tSortHelper('num_sm7',cursearch)"
+										ng-click="cursearch.setOrderBy('num_sm7')">SM 7</th>
+									<th ng-class="tSortHelper('num_smacls',cursearch)"
+										ng-click="cursearch.setOrderBy('num_smacls')">ACLS</th>
+									<th ng-class="tSortHelper('num_smz',cursearch)"
+									ng-click="cursearch.setOrderBy('num_smz')">SM Z</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="practice in filtered =(practices|filter: cursearch.search|filter: cursearch.filter|orderBy:cursearch.orderby:cursearch.reverse)">
+                                    <td>
+                                        <span ot-status-circle status="{{practice.kit_compliance_status}}">
+									</span>
+                                    </td>
+                                    <td>
+                                        <a ui-sref="app.practice.medications({id:'{{practice.customer_number}}'})" class="text-info"> {{practice.customer_number}} 
+									</a>
+                                    </td>
+                                    <td>
+                                        <a ui-sref="app.practice.medications({id:'{{practice.customer_number}}'})" class="text-info">
+									{{practice.name}}
+								</a>
+                                    </td>
+                                    <td>
+                                        {{practice.city}}
+                                    </td>
+                                    <td class=''>{{practice.state}}
+                                    </td>
+                                    <td ng-if="practice.num_otrs > 0" class=''>
+                                        {{practice.num_otrs}}
+                                    </td>
+                                    <td ng-if="practice.num_otrs == 0 && practice.kit_compliance_status < 4" class='text-danger '>
+                                        0
+                                    </td>
+                                    <td ng-if="practice.num_otrs == 0 && practice.kit_compliance_status == 4" class=''>
+                                        0
+                                    </td>
+                                    <td ng-if="practice.num_expired > 0" class='text-danger '>
+                                        {{practice.num_expired}}
+                                    </td>
+                                    <td ng-if="practice.num_expired == 0" class=''>
+                                    </td>
+                                    <td ng-class="practice.kit_compliance_status == 1 ? 'text-success' : (practice.kit_compliance_status == 2 ? 'text-warning' : (practice.kit_compliance_status == 3 ? 'text-danger' : ''))" translate="compliance.{{practice.kit_compliance_message}}"></td>
+
+                                    <!-- <td ng-if="practice.num_sm30 > 0">{{practice.num_sm30}}</td>
+									<td ng-if="practice.num_sm30 == 0"></td>
+
+									<td ng-if="practice.num_sm27 > 0">{{practice.num_sm27}}</td>
+									<td ng-if="practice.num_sm27 == 0"></td>
+
+									<td ng-if="practice.num_sm10 > 0">{{practice.num_sm10}}</td>
+									<td ng-if="practice.num_sm10 == 0"></td>
+
+									<td ng-if="practice.num_sm7 > 0">{{practice.num_sm7}}</td>
+									<td ng-if="practice.num_sm7 == 0"></td>
+
+									<td ng-if="practice.num_acls > 0">{{practice.num_acls}}</td>
+									<td ng-if="practice.num_acls == 0"></td>
+
+									<td ng-if="practice.num_smz > 0">{{practice.num_smz}}</td>
+									<td ng-if="practice.num_smz == 0"></td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END TABLE REPORT -->
+                </div>
+
+
+                <!-- END COMPLIANCE REPORT CONTENT -->
+            </div>
+            <!-- START EXPIRED REPORT CONTENT -->
+            <div ng-show="selectedReport=='expired'">
+                <div ng-show='expired.length == 0'>
+                    <br>No Expiring Items
+                </div>
+                <div ng-show='expired.length > 0'>
+                    <div class="panel panel-default" ng-show="selectedReport=='expired'">
+                        <div class="panel-heading">
+                            {{stats.count.expired}} Expired Items
+                        </div>
+                        <!-- START TABLE EXPIRED -->
+                        <div class='table-responsive m-t-md'>
+                            <table class="table table-striped m-b-none" data-page-size="10">
+                                <thead>
+                                    <tr>
+                                        <th>C#</th>
+                                        <th>Name</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Number</th>
+                                        <th>Type</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="exp in expired">
+                                        <td>{{exp.customer_number}}</td>
+                                        <td>{{exp.name}}</td>
+                                        <td>{{exp.city}}</td>
+                                        <td>{{exp.state}}</td>
+                                        <td>{{exp.kit_number}}</td>
+                                        <td>{{exp.kit_type}}</td>
+                                        <td>{{exp.itemdesc}}</td>
+                                        <td>{{exp.qty}}</td>
+                                        <td class='text-danger'>{{exp.expiration_date}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END TABLE EXPIRED -->
+
+                    <!-- END EXPIRED CONTENT -->
+                </div>
+            </div>
+
+            <!-- START EXPIRING REPORT CONTENT -->
+            <div ng-show="selectedReport=='expiring'">
+                <div ng-show='expiring.length == 0'>
+                    <br>No Expiring Items
+                </div>
+                <div ng-show='expiring.length > 0'>
+                    <div class="panel panel-default" ng-show="selectedReport=='expiring'">
+
+                        <div class="panel-heading">
+                            {{stats.count.expiring}} Expiring Items
+                        </div>
+                        <!-- START TABLE EXPIRING -->
+                        <div class='table-responsive m-t-md'>
+                            <table class="table table-striped m-b-none" data-page-size="10">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Number</th>
+                                        <th>Type</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="exp in expiring">
+                                        <td>{{exp.customer_number}}</td>
+                                        <td>{{exp.name}}</td>
+                                        <td>{{exp.city}}</td>
+                                        <td>{{exp.state}}</td>
+                                        <td>{{exp.kit_number}}</td>
+                                        <td>{{exp.kit_type}}</td>
+                                        <td>{{exp.itemdesc}}</td>
+                                        <td>{{exp.qty}}</td>
+                                        <td class='text-warning'>{{exp.expiration_date}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END TABLE EXPIRING -->
+                <!-- END EXPIRED CONTENT -->
+            </div>
+        </div>
+        <!-- END WRAPPER -->
+    </div>
+</div>
+<!-- END CONTROLLER -->

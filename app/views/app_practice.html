@@ -1,0 +1,90 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="
+app.settings.asideFolded = false; 
+app.settings.asideDock = false;
+">
+    <!-- main -->
+    <!-- main header -->
+
+    <div class="" ng-controller="practiceCtrl" practice="practice" flag='ture'>
+        <div style="background: url(images/img/c4.jpg) center center; background-size: cover">
+            <div class="bg-white-opacity" style="padding: 15px 0px 10px 30px">
+                <div class="row">
+                    <div class='col-lg-6'><i ng-if="practice.Name" class="fa fa-angle-double-right text-info-dker text-2x"></i>
+                        <span ng-if="practice.Name" class="h3">&nbsp;{{practice.Name}}</span>
+                        <small class="m-l">{{practice.City}}, {{practice.State}} </small>
+                        <div ng-switch on="practice.DoctorName"><span class="add-on"> <i class=" wrapper-xs  fa fa-user-md text-info-dker"></i></span>
+                            <span ng-switch-when=" ">N/A</span>
+                            <span ng-switch-default>&nbsp; {{practice.DoctorName}} </span><span class="m-l-sm" ng-if="practice.CustomerNumber">Customer#: {{practice.CustomerNumber}}</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="wrapper-xs pull-left">
+                            <!-- <div  ng-switch on="practice.DoctorName"><span class="add-on"> <i class="fa fa-user-md text-primary-dker"></i> </span>
+					<span ng-switch-when=" ">N/A</span>
+					<span ng-switch-default>&nbsp; {{practice.DoctorName}}
+					</div> -->
+                            <div ng-switch on="practice.Street"><span class="add-on"> <i class="fa fa-map-marker text-info-dker"></i> </span>
+                                <span ng-switch-when=" ">N/A</span>
+                                <span ng-switch-default>&nbsp; {{practice.Street}},</span>
+                                <span ng-switch-when=" "> N/A</span> <span ng-switch-default> {{practice.City}}, </span>
+                                <span ng-switch-when=" "> N/A</span>
+                                <span ng-switch-default>
+						{{practice.State}} - </span> <span ng-switch-when=" ">
+						N/A</span> <span ng-switch-default>
+						{{practice.PostalCode}}</span>
+                            </div>
+                            <div style="display:FLEX;list-style-type: none; ">
+                                <div ng-switch on="practice.Phone" style="width:120px;"><span class="add-on"> <i class="fa fa-phone-square text-info-dker" style="font-size:12px;"></i></span>
+                                    <span ng-switch-when=" ">N/A</span>
+                                    <span ng-switch-default>&nbsp; {{practice.Phone | phonenumber}}</span>
+                                </div>
+                                <div ng-switch on="practice.Email" style="width:310px;">
+                                    <span class="add-on"> <i class=" fa fa-envelope text-info-dker" style="font-size:12px;"></i></span>
+                                    <span ng-switch-when=" "> N/A</span>
+                                    <a ng-switch-default href="mailto:{{practice.Email}}" class="text-info">&nbsp; {{practice.Email}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div ng-if ='practice != null'>
+						<span class="add-on"> <i class="icon-building" style="font-size:12px;"></i>:</span>
+						 <span ng-switch-when=" ">
+							N/A</span> <span ng-switch-default> {{practice.Street}},
+							</span> <span ng-switch-when=" "> N/A</span> <span
+							ng-switch-default> {{practice.City}}, </span> <span
+							ng-switch-when=" "> N/A</span> <span ng-switch-default>
+							{{practice.State}} - </span> <span ng-switch-when=" ">
+							N/A</span> <span ng-switch-default>
+							{{practice.PostalCode}}</span>
+						</div> -->
+                    <!-- <div style="display:FLEX;list-style-type: none; ">
+						<div ng-switch on="practice.Phone" style="width:120px;"><span class="add-on"> <i class="icon-phone" style="font-size:12px;"></i>:</span>
+							<span ng-switch-when=" ">N/A</span>
+							<span ng-switch-default>206-345-9898 {{practice.Phone}}</span>
+						</div>
+						<div ng-switch on="practice.Email" style="width:250px;">
+						<span class="add-on"> <i class="icon-envelope" style="font-size:12px;"></i>:</span>
+							<span ng-switch-when=" "> N/A</span>
+							<span ng-switch-default> OnTraQ@HealthFirst.com{{practice.Email}}</span>
+						</div>
+					</div> -->
+                </div>
+            </div>
+        </div>
+        <div data-ng-include=" 'views/practice/body.html'"></div>
+        <div ui-view></div>
+
+
+    </div>
+
+
+
+    <!-- <div header text=" {{practice.Name}}" icon=" fa fa-angle-double-right icon text-info-dker"></div>
+	<div class="wrapper-md panel panel-default padded"></div> -->
+
+    <!-- / main header -->
+    <!-- get data from Controller  -->
+    <!-- Responsive table -->
+
+    <!-- search div -->
+</div>

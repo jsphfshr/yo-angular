@@ -1,0 +1,189 @@
+<style>
+.tab-otcal-cal {
+    margin-left: 15px;
+}
+.tab-otcal-cal .label-red {
+    background: #D63636;
+}
+.tab-otcal-cal .label-green {
+    background: #1EAD3A;
+}
+.tab-otcal-cal.label-orange {
+    background: #fdca96;
+}
+.tab-otcal-cal.label-gray {
+    background: #ececec;
+}
+</style>
+<style>
+.otcal {
+    width: 3000px;
+}
+.otcal tr {
+    height: 22px;
+}
+.otcal-left {
+    width: 420px;
+    float: left;
+    border-right: 1px solid #5F9FCE;
+}
+.otcal-left table {
+    table-layout: fixed;
+}
+.otcal-left .namediv {
+    width: 250px;
+}
+.otcal-left .score {
+    text-align: center;
+    width: 39px;
+}
+.otcal-left .numberdiv {
+    width: 130px;
+}
+.otcal-left-table-scroll .nametd {
+    width: 250px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.otcal-left-table-scroll .nametd a {} .otcal-left-table-scroll .numbertd {
+    width: 130px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.otcal-left-header div {
+    font-weight: bold;
+    font-size: 12px;
+    float: left;
+    /*position:relative; */
+    
+    width: 125px;
+    color: #88bede;
+}
+.otcal-left-table-scroll {
+    float: left;
+    border-spacing: none;
+}
+.otcal-left-table-scroll table td {
+    width: 125px;
+    padding: 0 !important;
+    border: none;
+}
+.otcal-right-header {
+    overflow: hidden;
+}
+.otcal-right {
+    margin: none;
+    float: left;
+}
+.otcal-right-header-scroll div {
+    float: left;
+    position: relative;
+    font-weight: bold;
+    font-size: 12px;
+    color: #88bede;
+}
+.otcal-right-table {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+.otcal-right-table table {
+    width: auto;
+    cursor: pointer;
+}
+.otcal-right-table-scroll {
+    overflow: hidden;
+    border-spacing: 0px;
+    position: relative;
+}
+.otcal-right-table table td:hover {
+    opacity: 0.5;
+}
+.fixed-header {
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: #ececec;
+}
+.week {
+    text-align: center;
+}
+#next {
+    position: fixed;
+    top: 400px;
+    left: 510px;
+    opacity: 0.6;
+    min-height: 26px;
+}
+#previous {
+    position: fixed;
+    top: 400px;
+    left: 1000px;
+    opacity: 0.6;
+    min-height: 26px;
+    float: right;
+}
+.calendar-left-right-arrow {
+    font-size: 26px;
+}
+.otcal-right-table table td {
+    width: 21px;
+    padding: 0;
+    text-align: center;
+    opacity: 1;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+}
+.table-normal tbody tr {
+    background-color: #F3F4F8;
+    border-top: 2px solid #eaebef;
+    border-collapse: collapse;
+    border-spacing: 1;
+}
+/*.otcal-left-table-scroll .nametd{
+	width:88%;
+}
+.otcal-left-table-scroll .numbertd{
+	width:12%;
+}*/
+
+#ournewtooltip {
+    min-width: 160px;
+    min-height: 30px;
+    position: fixed;
+    z-index: 1000;
+    background: black;
+    opacity: 0.7;
+    color: white;
+    border-radius: 6px;
+    display: none;
+    padding: 0 5px 7px 5px;
+}
+</style>
+
+<div ng-show="loaded" ng-controller="corpBioCtrl">
+    <div header text='Biological Monitoring' icon="null"></div>
+    <div class='wrapper-md'>
+
+        <!-- <div class="col-sm-6 pull-right">
+				<form class="bs-example form-horizontal ng-pristine ng-valid">
+					<div class="form-group">
+						<div class="col-sm-10 pull-right">
+							<div ui-module="select2">
+								<select multiple ui-select2="opt" ng-model="reportFilter.state" data-placeholder="States" class="form-control">
+									<option value=""></option>
+									<option ng-repeat="state in me.corporate_states" value="{{state[1]}}">
+										{{state[0]}}
+									</option>
+								</select>
+							</div>
+						</div>
+						<label class="col-lg-2 control-label pull-right">States:</label>
+					</div>
+				</form>
+			</div> -->
+
+        <div calendar period='period' columntype='columntype'></div>
+    </div>
+</div>
