@@ -4,9 +4,6 @@
 # to the main server config file (usually called `httpd.conf`), you should add
 # this logic there: http://httpd.apache.org/docs/current/howto/htaccess.html.
 
-RewriteRule ^vendor/(.*)$ /app2/vendor/$1 [R=301,NC,L]
-RewriteRule ^libs/(.*)$ /app2/libs/$1 [R=301,NC,L]
-
 # ##############################################################################
 # # CROSS-ORIGIN RESOURCE SHARING (CORS)                                       #
 # ##############################################################################
